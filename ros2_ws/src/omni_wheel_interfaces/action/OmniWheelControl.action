@@ -1,0 +1,10 @@
+#Request
+int32 target_angle
+bool is_turning
+float64 move_millimeter
+---
+#Result
+float64 millimeter
+---
+#Feedback
+float64 partial_millimeter
