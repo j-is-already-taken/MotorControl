@@ -1,0 +1,89 @@
+#include "omni_wheel/omni_wheel_server.hpp"
+
+
+namespace omni_wheel
+{
+
+  OmniWheelActionServer::OmniWheelActionServer(const rclcpp::NodeOptions & options)
+    : Node("omni_wheel_action_server", options)
+  {
+    //using namespace std::placeholders;
+
+    this->action_server_ = rclcpp_action::create_server<OmniWheel>(
+        this,
+        "omni_wheel",
+        std::bind(&OmniWheelActionServer::handle_goal, this, std::placeholders::_1, std::placeholders::_2),
+        std::bind(&OmniWheelActionServer::handle_cancel, this, std::placeholders::_1),
+        std::bind(&OmniWheelActionServer::handle_accepted, this, std::placeholders::_1));
+  }
+
+
+  rclcpp_action::GoalResponse OmniWheelActionServer::handle_goal(
+      const rclcpp_action::GoalUUID & uuid,
+      std::shared_ptr<const OmniWheel::Goal> goal)
+  {
+    RCLCPP_INFO(this->get_logger(), "Received goal request with order %d %s", goal->target_angle, (goal->is_turning ? "true" : "false"));
+    (void)uuid;
+    return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
+  }
+
+  rclcpp_action::CancelResponse OmniWheelActionServer::handle_cancel(
+      const std::shared_ptr<GoalHandleOmniWheel> goal_handle)
+  {
+    RCLCPP_INFO(this->get_logger(), "Received request to cancel goal");
+    (void)goal_handle;
+    return rclcpp_action::CancelResponse::ACCEPT;
+  }
+
+  void OmniWheelActionServer::handle_accepted(const std::shared_ptr<GoalHandleOmniWheel> goal_handle)
+  {
+    //using namespace std::placeholders;
+    // this needs to return quickly to avoid blocking the executor, so spin up a new thread
+    std::thread{std::bind(&OmniWheelActionServer::execute, this, std::placeholders::_1), goal_handle}.detach();
+  }
+
+  void OmniWheelActionServer::execute(const std::shared_ptr<GoalHandleOmniWheel> goal_handle)
+  {
+    RCLCPP_INFO(this->get_logger(), "Executing goal");
+    rclcpp::Rate loop_rate(10);
+    const auto goal = goal_handle->get_goal();
+    auto feedback = std::make_shared<OmniWheel::Feedback>();
+    auto & millimeter = feedback->partial_millimeter;
+    auto result = std::make_shared<OmniWheel::Result>();
+    omni_wheel_control.moveRobot(Angle(AngleType::Degree, goal->target_angle));
+
+    //for (int i = 1; (i < goal->move_millimeter) && rclcpp::ok(); ++i) {
+    double actual_move_millimeter = 0.0;
+    while(goal->move_millimeter > actual_move_millimeter)
+    {
+      // Check if there is a cancel request
+      if (goal_handle->is_canceling()) 
+      {
+        result->millimeter = millimeter;
+        goal_handle->canceled(result);
+        RCLCPP_INFO(this->get_logger(), "Goal canceled");
+        return;
+      }
+      // Update millimeter
+      actual_move_millimeter += 0.1;//todo: オドメトリなどから計算する
+      millimeter = actual_move_millimeter;
+
+      // Publish feedback
+      goal_handle->publish_feedback(feedback);
+      RCLCPP_INFO(this->get_logger(), "Publish feedback");
+
+      loop_rate.sleep();
+    }
+
+    // Check if goal is done
+    if (rclcpp::ok()) {
+      result->millimeter = millimeter;
+      goal_handle->succeed(result);
+      RCLCPP_INFO(this->get_logger(), "Goal succeeded");
+    }
+  }
+
+}  // namespace action_tutorials_cpp
+
+RCLCPP_COMPONENTS_REGISTER_NODE(omni_wheel::OmniWheelActionServer)
+
