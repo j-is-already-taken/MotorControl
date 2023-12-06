@@ -10,6 +10,16 @@
 class GPIOControl{
 };
 
+enum class TargetMotor{
+  Motor1, 
+  Motor2, 
+  Motor3, 
+  Motor1And2, 
+  Motor1And3, 
+  Motor2And3, 
+  All
+};
+
 struct MotorUsePin{
   uint32_t pwm_pin;
 
@@ -28,6 +38,9 @@ public:
   motor1CallBack(int , uint32_t, uint32_t, uint32_t);
   motor2CallBack(int , uint32_t, uint32_t, uint32_t);
   motor3CallBack(int , uint32_t, uint32_t, uint32_t);
+
+  int setDutyCycle(const std::vector<uint32_t> & );
+
 private:
   int initSetup();
   int pi_state_;
