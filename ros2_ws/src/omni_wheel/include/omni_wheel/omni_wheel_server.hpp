@@ -11,6 +11,7 @@
 #include "rclcpp_components/register_node_macro.hpp"
 
 #include "omni_wheel_control.hpp"
+#include "motor_control.hpp"
 
 
 namespace omni_wheel
@@ -37,6 +38,7 @@ namespace omni_wheel
       void execute(const std::shared_ptr<GoalHandleOmniWheel> goal_handle);
 
       OmniWheelControl omni_wheel_control;
+      MotorControl motor_control_;
   };  // class OmniWheelActionServer
 
 }  // namespace omni_wheel
