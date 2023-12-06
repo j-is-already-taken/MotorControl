@@ -45,13 +45,17 @@ namespace omni_wheel
   void OmniWheelActionServer::execute(const std::shared_ptr<GoalHandleOmniWheel> goal_handle)
   {
     RCLCPP_INFO(this->get_logger(), "Executing goal");
-    rclcpp::Rate loop_rate(10);
+    rclcpp::Rate loop_rate(50);
+    rclcpp::Time time = rclcpp::Time::now();
+    int32_t duty_ratio = 255;
     const auto goal = goal_handle->get_goal();
     auto feedback = std::make_shared<OmniWheel::Feedback>();
     auto & millimeter = feedback->partial_millimeter;
     auto result = std::make_shared<OmniWheel::Result>();
-    omni_wheel_control.moveRobot(Angle(AngleType::Degree, goal->target_angle));
+    auto [motor1_ratio, motor2_ratio, motor3_ratio] = omni_wheel_control.moveRobot(Angle(AngleType::Degree, goal->target_angle));
 
+    motor_control.setDutyCycle({motor1_ratio * duty_ratio, motor2_ratio * duty_ratio, moto3_ratio * duty_ratio});
+    auto start = std::chrono::high_resolution_clock::now();
     //for (int i = 1; (i < goal->move_millimeter) && rclcpp::ok(); ++i) {
     double actual_move_millimeter = 0.0;
     while(goal->move_millimeter > actual_move_millimeter)
@@ -65,13 +69,15 @@ namespace omni_wheel
         return;
       }
       // Update millimeter
-      actual_move_millimeter += 0.1;//todo: オドメトリなどから計算する
+      auto elpasd = std::chrono::high_resolution_clock::now();
+      actual_move_millimeter = std::duration_cast<std::chrono::milliseconds>(elpasd - start).count() / 1000.;//todo: オドメトリなどから計算する
       millimeter = actual_move_millimeter;
 
       // Publish feedback
       goal_handle->publish_feedback(feedback);
       RCLCPP_INFO(this->get_logger(), "Publish feedback");
 
+    auto start = std::chrono::high_resolution_clock::now();
       loop_rate.sleep();
     }
 
