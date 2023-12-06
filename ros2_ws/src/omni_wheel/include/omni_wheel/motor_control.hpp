@@ -31,6 +31,21 @@ struct MotorUsePin{
   uint32_t encorder_input_pin2;
 };
 
+enum class RotationDirection
+{
+  CW, 
+  CCW, 
+  Right=CW, 
+  Left=CCW
+};
+
+struct MotorCommand
+{
+  uint32_t dutycycle;
+  RotationDirection rotation_direction;
+
+};
+
 class MotorControl{
 public:
   MotorControl();
@@ -41,6 +56,7 @@ public:
   static void motor3CallBack(int , uint32_t, uint32_t, uint32_t);
 
   int setDutyCycle(const std::vector<uint32_t> & );
+  void motorMove(const std::vector<MotorCommand> &);
 
 private:
   int initSetup();

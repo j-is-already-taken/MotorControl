@@ -119,29 +119,23 @@ int MotorControl::setDutyCycle(const std::vector<uint32_t> &duty_cycle)
   {
     if(isCheckError(set_PWM_dutycycle(pi_state_, motor_use_pin_.at(i).pwm_pin, duty_cycle.at(i)), "set pwm dutycycle error ", PI_BAD_USER_GPIO, PI_BAD_DUTYCYCLE, PI_NOT_PERMITTED)) return -1;
   }
-  /*
-  if(target == TargetMotor::Motor1){
-    if(isCheckError(set_PWM_dutycycle(pi_state_, motor_use_pin_.at(0).pwm_pin, duty_cycle), "set pwm dutycycle error ", PI_BAD_USER_GPIO, PI_BAD_DUTYCYCLE, PI_NOT_PERMITTED)) return -1;
-  }else if(target == TargetMotor::Motor2){
-    if(isCheckError(set_PWM_dutycycle(pi_state_, motor_use_pin_.at(2).pwm_pin, duty_cycle), "set pwm dutycycle error ", PI_BAD_USER_GPIO, PI_BAD_DUTYCYCLE, PI_NOT_PERMITTED)) return -1;
-  }else if(target == TargetMotor::Motor3){
-    if(isCheckError(set_PWM_dutycycle(pi_state_, motor_use_pin_.at(3).pwm_pin, duty_cycle), "set pwm dutycycle error ", PI_BAD_USER_GPIO, PI_BAD_DUTYCYCLE, PI_NOT_PERMITTED)) return -1;
-  }else if(target == TargetMotor::Motor1And2){
-    if(isCheckError(set_PWM_dutycycle(pi_state_, motor_use_pin_.at(0).pwm_pin, duty_cycle), "set pwm dutycycle error ", PI_BAD_USER_GPIO, PI_BAD_DUTYCYCLE, PI_NOT_PERMITTED)) return -1;
-    if(isCheckError(set_PWM_dutycycle(pi_state_, motor_use_pin_.at(1).pwm_pin, duty_cycle), "set pwm dutycycle error ", PI_BAD_USER_GPIO, PI_BAD_DUTYCYCLE, PI_NOT_PERMITTED)) return -1;
-  }else if(target == TargetMotor::Motor1And3){
-    if(isCheckError(set_PWM_dutycycle(pi_state_, motor_use_pin_.at(0).pwm_pin, duty_cycle), "set pwm dutycycle error ", PI_BAD_USER_GPIO, PI_BAD_DUTYCYCLE, PI_NOT_PERMITTED)) return -1;
-    if(isCheckError(set_PWM_dutycycle(pi_state_, motor_use_pin_.at(2).pwm_pin, duty_cycle), "set pwm dutycycle error ", PI_BAD_USER_GPIO, PI_BAD_DUTYCYCLE, PI_NOT_PERMITTED)) return -1;
-  }else if(target == TargetMotor::Motor2And3){
-    if(isCheckError(set_PWM_dutycycle(pi_state_, motor_use_pin_.at(1).pwm_pin, duty_cycle), "set pwm dutycycle error ", PI_BAD_USER_GPIO, PI_BAD_DUTYCYCLE, PI_NOT_PERMITTED)) return -1;
-    if(isCheckError(set_PWM_dutycycle(pi_state_, motor_use_pin_.at(2).pwm_pin, duty_cycle), "set pwm dutycycle error ", PI_BAD_USER_GPIO, PI_BAD_DUTYCYCLE, PI_NOT_PERMITTED)) return -1;
-  }else if(target == TargetMotor::All){
-    if(isCheckError(set_PWM_dutycycle(pi_state_, motor_use_pin_.at(0).pwm_pin, duty_cycle), "set pwm dutycycle error ", PI_BAD_USER_GPIO, PI_BAD_DUTYCYCLE, PI_NOT_PERMITTED)) return -1;
-    if(isCheckError(set_PWM_dutycycle(pi_state_, motor_use_pin_.at(1).pwm_pin, duty_cycle), "set pwm dutycycle error ", PI_BAD_USER_GPIO, PI_BAD_DUTYCYCLE, PI_NOT_PERMITTED)) return -1;
-    if(isCheckError(set_PWM_dutycycle(pi_state_, motor_use_pin_.at(2).pwm_pin, duty_cycle), "set pwm dutycycle error ", PI_BAD_USER_GPIO, PI_BAD_DUTYCYCLE, PI_NOT_PERMITTED)) return -1;
-  }
-  */
 
   return 0;
+}
+
+void motorMove(const std::vector<MotorCommand> &motor_command)
+{
+  if(motor_command.size() != motor_use_num_) return;
+  std::vector<uint32_t> send_duty_cycle;
+  for(std::size_t i=0;i<motor_use_num_;i++)
+  {
+    send_duty_cycle.push_back(motor_command.at(i).dutycycle);
+  }
+  int ret = setDutyCycle(send_duty_cycle);
+  if(ret) return;
+  if(motor_command.rotation_direction == RotationDirection::CW){
+  }else {
+  }
+
 }
 
