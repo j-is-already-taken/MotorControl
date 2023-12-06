@@ -42,8 +42,8 @@ ament_target_dependencies(omni_wheel_action_server_lib
 )
 target_link_libraries(omni_wheel_action_server_lib
   Eigen3::Eigen
-  #pigpio
-  #pigpiod_if2
+#pigpio
+  pigpiod_if2
   )
 
 rclcpp_components_register_node(omni_wheel_action_server_lib PLUGIN

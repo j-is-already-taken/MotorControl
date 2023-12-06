@@ -1,10 +1,11 @@
 #ifndef MOTOR_CONTROL_HPP_
 #define MOTOR_CONTROL_HPP_
 
-//#include <pigpiod_if2.h>
+#include <pigpiod_if2.h>
 
 #include <iostream>
 #include <array>
+#include <vector>
 
 
 class GPIOControl{
@@ -35,9 +36,9 @@ public:
   MotorControl();
   ~MotorControl();
 
-  motor1CallBack(int , uint32_t, uint32_t, uint32_t);
-  motor2CallBack(int , uint32_t, uint32_t, uint32_t);
-  motor3CallBack(int , uint32_t, uint32_t, uint32_t);
+  static void motor1CallBack(int , uint32_t, uint32_t, uint32_t);
+  static void motor2CallBack(int , uint32_t, uint32_t, uint32_t);
+  static void motor3CallBack(int , uint32_t, uint32_t, uint32_t);
 
   int setDutyCycle(const std::vector<uint32_t> & );
 
@@ -45,10 +46,11 @@ private:
   int initSetup();
   int pi_state_;
   uint32_t frequency_;
+  uint32_t dutycycle_;
 
   const std::size_t motor_use_num_=3;
   //std::array<MotorUsePin, motor_use_num> motor_use_pin_;
-  std::array<MotorUsePin, 3> motor_use_pin_;
+  static std::array<MotorUsePin, 3> motor_use_pin_;
 };
 
 #endif //MOTOR_CONTROL_HPP_
