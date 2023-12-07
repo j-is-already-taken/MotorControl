@@ -44,13 +44,13 @@ int MotorControl::initSetup()
   std::vector<MotorUsePin> each_pin{MotorUsePin(12, 7, 8, 10, 25), MotorUsePin(13, 5, 6, 9, 11), MotorUsePin(16, 13, 19, 20, 21)};
   for(std::size_t i=0;i<motor_use_num_;i++)
   {
-    motor_use_pin_.at(i).pwm_pin = each_pin.at(i).pwm_pin;
+    MotorControl::motor_use_pin_.at(i).pwm_pin = each_pin.at(i).pwm_pin;
 
-    motor_use_pin_.at(i).rotate_control_pin1 = each_pin.at(i).rotate_control_pin1;
-    motor_use_pin_.at(i).rotate_control_pin2 = each_pin.at(i).rotate_control_pin2;
+    MotorControl::motor_use_pin_.at(i).rotate_control_pin1 = each_pin.at(i).rotate_control_pin1;
+    MotorControl::motor_use_pin_.at(i).rotate_control_pin2 = each_pin.at(i).rotate_control_pin2;
 
-    motor_use_pin_.at(i).encorder_input_pin1 = each_pin.at(i).encorder_input_pin1;
-    motor_use_pin_.at(i).encorder_input_pin2 = each_pin.at(i).encorder_input_pin2;
+    MotorControl::motor_use_pin_.at(i).encorder_input_pin1 = each_pin.at(i).encorder_input_pin1;
+    MotorControl::motor_use_pin_.at(i).encorder_input_pin2 = each_pin.at(i).encorder_input_pin2;
   }
   pi_state_ = pigpio_start(nullptr, nullptr);
   if(isCheckError(pi_state_, "not started. check running pigpiod daemon", 0)) return -1;
@@ -142,7 +142,7 @@ void MotorControl::moveMotor(const std::vector<MotorCommand> &motor_command)
     }else {
       if(isCheckError(gpio_write(pi_state_, motor_use_pin_.at(i).rotate_control_pin1, PI_LOW), "gpio write error", PI_BAD_GPIO, PI_BAD_LEVEL, PI_NOT_PERMITTED)) return ;
       if(isCheckError(gpio_write(pi_state_, motor_use_pin_.at(i).rotate_control_pin2, PI_HIGH), "gpio write error", PI_BAD_GPIO, PI_BAD_LEVEL, PI_NOT_PERMITTED)) return ;
-  }
+    }
   }
 
 }
