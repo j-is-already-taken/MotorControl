@@ -133,8 +133,13 @@ void motorMove(const std::vector<MotorCommand> &motor_command)
   }
   int ret = setDutyCycle(send_duty_cycle);
   if(ret) return;
-  if(motor_command.rotation_direction == RotationDirection::CW){
+
+  if(motor_command.at(i).rotation_direction == RotationDirection::CW){
+    if(isCheckError(gpio_write(pi_state_, motor_use_pin_.at(i).rotate_control_pin1, PI_HIGH), "gpio write error", PI_PAD_GPIO, PI_BAD_LEVEL, PI_NOT_PERMITTED)) return ;
+    if(isCheckError(gpio_write(pi_state_, motor_use_pin_.at(i).rotate_control_pin2, PI_LOW), "gpio write error", PI_PAD_GPIO, PI_BAD_LEVEL, PI_NOT_PERMITTED)) return ;
   }else {
+    if(isCheckError(gpio_write(pi_state_, motor_use_pin_.at(i).rotate_control_pin1, PI_LOW), "gpio write error", PI_PAD_GPIO, PI_BAD_LEVEL, PI_NOT_PERMITTED)) return ;
+    if(isCheckError(gpio_write(pi_state_, motor_use_pin_.at(i).rotate_control_pin2, PI_HIGH), "gpio write error", PI_PAD_GPIO, PI_BAD_LEVEL, PI_NOT_PERMITTED)) return ;
   }
 
 }
