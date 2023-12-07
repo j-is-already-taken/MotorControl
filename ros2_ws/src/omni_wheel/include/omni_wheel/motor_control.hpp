@@ -41,6 +41,10 @@ enum class RotationDirection
 
 struct MotorCommand
 {
+  MotorCommand(): dutycycle(0), rotation_direction(RotationDirection::CW)
+  {}
+  MotorCommand(uint32_t tmp_dutycycle, RotationDirection tmp_rotation_direction): dutycycle(tmp_dutycycle), rotation_direction(tmp_rotation_direction)
+  {}
   uint32_t dutycycle;
   RotationDirection rotation_direction;
 
@@ -56,7 +60,7 @@ public:
   static void motor3CallBack(int , uint32_t, uint32_t, uint32_t);
 
   int setDutyCycle(const std::vector<uint32_t> & );
-  void motorMove(const std::vector<MotorCommand> &);
+  void moveMotor(const std::vector<MotorCommand> &);
 
 private:
   int initSetup();

@@ -1,5 +1,7 @@
 #include "omni_wheel/omni_wheel_server.hpp"
 
+#include <chrono>
+
 
 namespace omni_wheel
 {
@@ -46,7 +48,7 @@ namespace omni_wheel
   {
     RCLCPP_INFO(this->get_logger(), "Executing goal");
     rclcpp::Rate loop_rate(50);
-    rclcpp::Time time = rclcpp::Time::now();
+    //rclcpp::Time time = rclcpp::Time::now();
     int32_t duty_ratio = 255;
     const auto goal = goal_handle->get_goal();
     auto feedback = std::make_shared<OmniWheel::Feedback>();
@@ -54,7 +56,23 @@ namespace omni_wheel
     auto result = std::make_shared<OmniWheel::Result>();
     auto [motor1_ratio, motor2_ratio, motor3_ratio] = omni_wheel_control.moveRobot(Angle(AngleType::Degree, goal->target_angle));
 
-    motor_control.setDutyCycle({motor1_ratio * duty_ratio, motor2_ratio * duty_ratio, moto3_ratio * duty_ratio});
+    std::array<double, 3> motor_ratio{motor1_ratio, motor2_ratio, motor3_ratio};
+
+    std::vector<MotorCommand> motor_command;
+    for(const auto &tmp_motor_ratio: motor_ratio)
+    {
+      RotationDirection rotation_direction = RotationDirection::CW;
+      if(tmp_motor_ratio < 0)
+      {
+        rotation_direction = RotationDirection::CCW;
+      }
+      motor_command.emplace_back(MotorCommand{std::abs(tmp_motor_ratio), rotation_direction});
+    }
+
+
+    //motor_control_.setDutyCycle({motor1_ratio * duty_ratio, motor2_ratio * duty_ratio, motor3_ratio * duty_ratio});
+
+    motor_control_.moveMotor(motor_command);
     auto start = std::chrono::high_resolution_clock::now();
     //for (int i = 1; (i < goal->move_millimeter) && rclcpp::ok(); ++i) {
     double actual_move_millimeter = 0.0;
@@ -70,7 +88,7 @@ namespace omni_wheel
       }
       // Update millimeter
       auto elpasd = std::chrono::high_resolution_clock::now();
-      actual_move_millimeter = std::duration_cast<std::chrono::milliseconds>(elpasd - start).count() / 1000.;//todo: オドメトリなどから計算する
+      actual_move_millimeter = std::chrono::duration_cast<std::chrono::milliseconds>(elpasd - start).count() / 1000.;//todo: オドメトリなどから計算する
       millimeter = actual_move_millimeter;
 
       // Publish feedback

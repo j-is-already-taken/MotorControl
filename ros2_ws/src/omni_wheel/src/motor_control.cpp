@@ -123,7 +123,7 @@ int MotorControl::setDutyCycle(const std::vector<uint32_t> &duty_cycle)
   return 0;
 }
 
-void motorMove(const std::vector<MotorCommand> &motor_command)
+void MotorControl::moveMotor(const std::vector<MotorCommand> &motor_command)
 {
   if(motor_command.size() != motor_use_num_) return;
   std::vector<uint32_t> send_duty_cycle;
@@ -134,12 +134,15 @@ void motorMove(const std::vector<MotorCommand> &motor_command)
   int ret = setDutyCycle(send_duty_cycle);
   if(ret) return;
 
-  if(motor_command.at(i).rotation_direction == RotationDirection::CW){
-    if(isCheckError(gpio_write(pi_state_, motor_use_pin_.at(i).rotate_control_pin1, PI_HIGH), "gpio write error", PI_PAD_GPIO, PI_BAD_LEVEL, PI_NOT_PERMITTED)) return ;
-    if(isCheckError(gpio_write(pi_state_, motor_use_pin_.at(i).rotate_control_pin2, PI_LOW), "gpio write error", PI_PAD_GPIO, PI_BAD_LEVEL, PI_NOT_PERMITTED)) return ;
-  }else {
-    if(isCheckError(gpio_write(pi_state_, motor_use_pin_.at(i).rotate_control_pin1, PI_LOW), "gpio write error", PI_PAD_GPIO, PI_BAD_LEVEL, PI_NOT_PERMITTED)) return ;
-    if(isCheckError(gpio_write(pi_state_, motor_use_pin_.at(i).rotate_control_pin2, PI_HIGH), "gpio write error", PI_PAD_GPIO, PI_BAD_LEVEL, PI_NOT_PERMITTED)) return ;
+  for(std::size_t i=0;i<motor_use_num_;i++)
+  {
+    if(motor_command.at(i).rotation_direction == RotationDirection::CW){
+      if(isCheckError(gpio_write(pi_state_, motor_use_pin_.at(i).rotate_control_pin1, PI_HIGH), "gpio write error", PI_BAD_GPIO, PI_BAD_LEVEL, PI_NOT_PERMITTED)) return ;
+      if(isCheckError(gpio_write(pi_state_, motor_use_pin_.at(i).rotate_control_pin2, PI_LOW), "gpio write error", PI_BAD_GPIO, PI_BAD_LEVEL, PI_NOT_PERMITTED)) return ;
+    }else {
+      if(isCheckError(gpio_write(pi_state_, motor_use_pin_.at(i).rotate_control_pin1, PI_LOW), "gpio write error", PI_BAD_GPIO, PI_BAD_LEVEL, PI_NOT_PERMITTED)) return ;
+      if(isCheckError(gpio_write(pi_state_, motor_use_pin_.at(i).rotate_control_pin2, PI_HIGH), "gpio write error", PI_BAD_GPIO, PI_BAD_LEVEL, PI_NOT_PERMITTED)) return ;
+  }
   }
 
 }
