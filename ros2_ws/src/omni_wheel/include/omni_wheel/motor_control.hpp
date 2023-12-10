@@ -61,6 +61,7 @@ public:
 
   int setDutyCycle(const std::vector<uint32_t> & );
   void moveMotor(const std::vector<MotorCommand> &);
+  void stopMotor();
 
 private:
   int initSetup();
@@ -74,3 +75,5 @@ private:
 };
 
 #endif //MOTOR_CONTROL_HPP_
+
+//std::array<MotorUsePin, 3> MotorControl::motor_use_pin_({0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0});

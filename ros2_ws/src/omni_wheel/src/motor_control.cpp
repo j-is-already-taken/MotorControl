@@ -1,5 +1,8 @@
 #include "omni_wheel/motor_control.hpp"
 
+
+std::array<MotorUsePin, 3> MotorControl::motor_use_pin_{(0, 0, 0, 0, 0), (0, 0, 0, 0, 0), (0, 0, 0, 0, 0)};
+
 template <class... Args>
 bool isCheckError(int ret, std::string error_msg, Args... args)
 {
@@ -39,18 +42,23 @@ MotorControl::MotorControl(): pi_state_(-1), frequency_(50), dutycycle_(255)
   }
   initSetup();
 }
+MotorControl::~MotorControl()
+{
+	pigpio_stop(pi_state_);
+}
+
 int MotorControl::initSetup()
 {
   std::vector<MotorUsePin> each_pin{MotorUsePin(12, 7, 8, 10, 25), MotorUsePin(13, 5, 6, 9, 11), MotorUsePin(16, 13, 19, 20, 21)};
   for(std::size_t i=0;i<motor_use_num_;i++)
   {
-    MotorControl::motor_use_pin_.at(i).pwm_pin = each_pin.at(i).pwm_pin;
+    motor_use_pin_.at(i).pwm_pin = each_pin.at(i).pwm_pin;
 
-    MotorControl::motor_use_pin_.at(i).rotate_control_pin1 = each_pin.at(i).rotate_control_pin1;
-    MotorControl::motor_use_pin_.at(i).rotate_control_pin2 = each_pin.at(i).rotate_control_pin2;
+    motor_use_pin_.at(i).rotate_control_pin1 = each_pin.at(i).rotate_control_pin1;
+    motor_use_pin_.at(i).rotate_control_pin2 = each_pin.at(i).rotate_control_pin2;
 
-    MotorControl::motor_use_pin_.at(i).encorder_input_pin1 = each_pin.at(i).encorder_input_pin1;
-    MotorControl::motor_use_pin_.at(i).encorder_input_pin2 = each_pin.at(i).encorder_input_pin2;
+    motor_use_pin_.at(i).encorder_input_pin1 = each_pin.at(i).encorder_input_pin1;
+    motor_use_pin_.at(i).encorder_input_pin2 = each_pin.at(i).encorder_input_pin2;
   }
   pi_state_ = pigpio_start(nullptr, nullptr);
   if(isCheckError(pi_state_, "not started. check running pigpiod daemon", 0)) return -1;
@@ -125,6 +133,8 @@ int MotorControl::setDutyCycle(const std::vector<uint32_t> &duty_cycle)
 
 void MotorControl::moveMotor(const std::vector<MotorCommand> &motor_command)
 {
+  //RCLCPP_INFO("moveMotor INININ\n");
+	std::cout << "moveMotor inininin" << std::endl;
   if(motor_command.size() != motor_use_num_) return;
   std::vector<uint32_t> send_duty_cycle;
   for(std::size_t i=0;i<motor_use_num_;i++)
@@ -147,3 +157,11 @@ void MotorControl::moveMotor(const std::vector<MotorCommand> &motor_command)
 
 }
 
+void MotorControl::stopMotor()
+{
+  for(std::size_t i=0;i<motor_use_num_;i++)
+  {
+      if(isCheckError(gpio_write(pi_state_, motor_use_pin_.at(i).rotate_control_pin1, PI_LOW), "gpio write error", PI_BAD_GPIO, PI_BAD_LEVEL, PI_NOT_PERMITTED)) return ;
+      if(isCheckError(gpio_write(pi_state_, motor_use_pin_.at(i).rotate_control_pin2, PI_LOW), "gpio write error", PI_BAD_GPIO, PI_BAD_LEVEL, PI_NOT_PERMITTED)) return ;
+  }
+}

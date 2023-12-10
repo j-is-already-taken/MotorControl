@@ -66,7 +66,7 @@ namespace omni_wheel
       {
         rotation_direction = RotationDirection::CCW;
       }
-      motor_command.emplace_back(MotorCommand{std::abs(tmp_motor_ratio), rotation_direction});
+      motor_command.emplace_back(MotorCommand{(std::abs(tmp_motor_ratio) * duty_ratio), rotation_direction});
     }
 
 
@@ -84,6 +84,7 @@ namespace omni_wheel
         result->millimeter = millimeter;
         goal_handle->canceled(result);
         RCLCPP_INFO(this->get_logger(), "Goal canceled");
+	motor_control_.stopMotor();
         return;
       }
       // Update millimeter
@@ -95,10 +96,11 @@ namespace omni_wheel
       goal_handle->publish_feedback(feedback);
       RCLCPP_INFO(this->get_logger(), "Publish feedback");
 
-    auto start = std::chrono::high_resolution_clock::now();
+    //auto start = std::chrono::high_resolution_clock::now();
       loop_rate.sleep();
     }
 
+    motor_control_.stopMotor();
     // Check if goal is done
     if (rclcpp::ok()) {
       result->millimeter = millimeter;
