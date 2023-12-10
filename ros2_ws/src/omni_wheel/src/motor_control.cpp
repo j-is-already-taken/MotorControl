@@ -49,7 +49,7 @@ MotorControl::~MotorControl()
 
 int MotorControl::initSetup()
 {
-  std::vector<MotorUsePin> each_pin{MotorUsePin(12, 7, 8, 10, 25), MotorUsePin(13, 5, 6, 9, 11), MotorUsePin(16, 13, 19, 20, 21)};
+  std::vector<MotorUsePin> each_pin{MotorUsePin(12, 7, 8, 10, 25), MotorUsePin(13, 5, 6, 9, 11), MotorUsePin(16, 19, 26, 20, 21)};
   for(std::size_t i=0;i<motor_use_num_;i++)
   {
     motor_use_pin_.at(i).pwm_pin = each_pin.at(i).pwm_pin;
