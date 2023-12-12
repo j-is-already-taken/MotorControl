@@ -13,8 +13,8 @@ OmniWheelControl::~OmniWheelControl()
 
 OmniWheelMoterSpeed OmniWheelControl::moveRobot(const Angle &move_angle, const double &speed)
 {
-  double velocity_x = std::abs(speed * std::cos(move_angle.radian_));
-  double velocity_y = std::abs(speed * std::sin(move_angle.radian_));
+  double velocity_x = speed * std::cos(move_angle.radian_);
+  double velocity_y = speed * std::sin(move_angle.radian_);
   double omega = 0.0;
 
 
@@ -23,9 +23,10 @@ OmniWheelMoterSpeed OmniWheelControl::moveRobot(const Angle &move_angle, const d
   //Eigen::MatrixXd global_V (velocity_x, velocity_y, omega);
   Eigen::Vector3d global_V (velocity_x, velocity_y, omega);
   Eigen::Matrix3d rotate_local;
-  rotate_local << std::cos(move_angle.radian_), std::sin(move_angle.radian_), L,
-                  -std::cos(move_angle.radian_ + (2 * std::numbers::pi) / 3), std::sin(move_angle.radian_ + (2 * std::numbers::pi) / 3), L, 
-                  -std::cos(move_angle.radian_ + std::numbers::pi / 3), std::sin(move_angle.radian_ + std::numbers::pi / 3), L;
+
+  rotate_local << 1, 0, L,
+               -1/2., std::sqrt(3) / 2., L,
+               -1/2., -std::sqrt(3) / 2., L;
 
   Eigen::VectorXd local_velo = rotate_local * global_V;
 
