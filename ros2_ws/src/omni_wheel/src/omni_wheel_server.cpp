@@ -54,9 +54,25 @@ namespace omni_wheel
     auto feedback = std::make_shared<OmniWheel::Feedback>();
     auto & millimeter = feedback->partial_millimeter;
     auto result = std::make_shared<OmniWheel::Result>();
-    auto [motor1_ratio, motor2_ratio, motor3_ratio] = omni_wheel_control.moveRobot(Angle(AngleType::Degree, goal->target_angle), duty_ratio);
+    std::array<double, 3> motor_ratio;
+    if(goal->is_turning){
+      RotationDirection rotation_direction = RotationDirection::CW;
+      if(goal->target_angle >= 0)
+      {
+        rotation_direction = RotationDirection::CCW;
+      }
+      auto [motor1_ratio, motor2_ratio, motor3_ratio] = omni_wheel_control.turnRobot(rotation_direction, duty_ratio);
+      motor_ratio.at(0) = motor1_ratio;
+      motor_ratio.at(1) = motor2_ratio;
+      motor_ratio.at(2) = motor3_ratio;
+    }else{
+      auto [motor1_ratio, motor2_ratio, motor3_ratio] = omni_wheel_control.moveRobot(Angle(AngleType::Degree, goal->target_angle), duty_ratio);
+      motor_ratio.at(0) = motor1_ratio;
+      motor_ratio.at(1) = motor2_ratio;
+      motor_ratio.at(2) = motor3_ratio;
+    }
 
-    std::array<double, 3> motor_ratio{motor1_ratio, motor2_ratio, motor3_ratio};
+    //std::array<double, 3> motor_ratio{motor1_ratio, motor2_ratio, motor3_ratio};
 
     std::vector<MotorCommand> motor_command;
     for(const auto &tmp_motor_ratio: motor_ratio)

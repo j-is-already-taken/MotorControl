@@ -37,7 +37,20 @@ OmniWheelMoterSpeed OmniWheelControl::moveRobot(const Angle &move_angle, const d
   return each_moter_speed;
 }
 
-int OmniWheelControl::moveTurn(const Angle &turning_angle, const RotationalDirection &direction)
+OmniWheelMoterSpeed OmniWheelControl::turnRobot(const RotationalDirection &direction, const double &speed)
 {
-  return 0;
+  Eigen::Matrix3d each_motor_speed;
+  if(RotationalDirection::CW == direction){
+    each_motor_speed << -255, -255, -255;
+
+  }else{
+    each_motor_speed << 255, 255, 255;
+  }
+
+  if(speed <= 1.0)
+  {
+    each_motor_speed *= speed;
+  }
+
+  return OmniWheelMoterSpeed(each_motor_speed(0), each_motor_speed(1), each_motor_speed(2));
 }

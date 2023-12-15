@@ -99,7 +99,7 @@ public:
   OmniWheelControl();
   ~OmniWheelControl();
   OmniWheelMoterSpeed moveRobot(const Angle &move_angle, const double &speed=1.0);
-  int moveTurn(const Angle &turning_angle, const RotationalDirection &direction);
+  OmniWheelMoterSpeed turnRobot(const RotationalDirection &direction, const double &speed=1.0);
 private:
 
 };
