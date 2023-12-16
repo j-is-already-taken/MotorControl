@@ -1,0 +1,7 @@
+#request
+bool is_move
+---
+#result
+bool success
+---
+#feedback
