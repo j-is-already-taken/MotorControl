@@ -56,10 +56,10 @@ namespace omni_wheel
     auto result = std::make_shared<OmniWheel::Result>();
     std::array<double, 3> motor_ratio;
     if(goal->is_turning){
-      RotationDirection rotation_direction = RotationDirection::CW;
+      RotationalDirection rotation_direction = RotationalDirection::CW;
       if(goal->target_angle >= 0)
       {
-        rotation_direction = RotationDirection::CCW;
+        rotation_direction = RotationalDirection::CCW;
       }
       auto [motor1_ratio, motor2_ratio, motor3_ratio] = omni_wheel_control.turnRobot(rotation_direction, duty_ratio);
       motor_ratio.at(0) = motor1_ratio;
@@ -78,10 +78,10 @@ namespace omni_wheel
     for(const auto &tmp_motor_ratio: motor_ratio)
     {
       std::cout << tmp_motor_ratio << std::endl;
-      RotationDirection rotation_direction = RotationDirection::CW;
+      RotationalDirection rotation_direction = RotationalDirection::CW;
       if(tmp_motor_ratio < 0)
       {
-        rotation_direction = RotationDirection::CCW;
+        rotation_direction = RotationalDirection::CCW;
       }
       motor_command.emplace_back(MotorCommand{static_cast<uint32_t>(std::abs(tmp_motor_ratio)) , rotation_direction});
     }
