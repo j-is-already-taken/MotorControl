@@ -31,7 +31,7 @@ namespace servo_control
           std::shared_ptr<const ServoControl::Goal> goal);
 
       rclcpp_action::CancelResponse handle_cancel(
-          const std::shared_ptr<GoalHandleServoControl> goal_handle);
+          const std::shared_ptr<GoalHandleServo> goal_handle);
 
       void handle_accepted(const std::shared_ptr<GoalHandleServo> goal_handle);
 

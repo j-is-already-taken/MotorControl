@@ -57,7 +57,7 @@ namespace servo_control
 
     //for (int i = 1; (i < goal->move_millimeter) && rclcpp::ok(); ++i) {
     bool success = false;
-    if(goal->is_move){
+    if(goal->is_move)
     {
       // Check if there is a cancel request
       if (goal_handle->is_canceling()) 
