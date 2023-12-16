@@ -11,6 +11,7 @@ find_package(omni_wheel_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(rclcpp_components REQUIRED)
+find_package(geometry_msgs REQUIRED)
 
 find_package(Eigen3 REQUIRED)
 #find_package(pigpio REQUIRED)
@@ -54,6 +55,44 @@ target_compile_features(omni_wheel_action_server_lib PRIVATE cxx_std_20)
 
 install(TARGETS
   omni_wheel_action_server_lib
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin)
+
+add_library(omni_wheel_action_client_lib SHARED
+  src/omni_wheel_client.cpp)
+
+target_sources(omni_wheel_action_client_lib PRIVATE
+  src/omni_wheel_client.cpp
+  src/omni_wheel_control.cpp
+  src/motor_control.cpp
+)
+
+target_include_directories(omni_wheel_action_client_lib PRIVATE
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+
+target_compile_definitions(omni_wheel_action_client_lib
+  PRIVATE "ACTION_TUTORIALS_CPP_BUILDING_DLL")
+
+ament_target_dependencies(omni_wheel_action_client_lib
+  omni_wheel_interfaces
+  rclcpp
+  rclcpp_action
+  rclcpp_components
+  geometry_msgs)
+
+target_link_libraries(omni_wheel_action_client_lib
+  Eigen3::Eigen
+  pigpiod_if2
+  )
+
+rclcpp_components_register_node(omni_wheel_action_client_lib PLUGIN omni_wheel::OmniWheelActionClient EXECUTABLE omni_wheel_action_client)
+
+target_compile_features(omni_wheel_action_client_lib PRIVATE cxx_std_20)
+
+install(TARGETS
+  omni_wheel_action_client_lib
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
