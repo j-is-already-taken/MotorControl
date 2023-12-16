@@ -47,7 +47,7 @@ namespace omni_wheel
   void OmniWheelActionServer::execute(const std::shared_ptr<GoalHandleOmniWheel> goal_handle)
   {
     RCLCPP_INFO(this->get_logger(), "Executing goal");
-    rclcpp::Rate loop_rate(50);
+    rclcpp::Rate loop_rate(200);
     //rclcpp::Time time = rclcpp::Time::now();
     int32_t duty_ratio = 255;
     const auto goal = goal_handle->get_goal();
