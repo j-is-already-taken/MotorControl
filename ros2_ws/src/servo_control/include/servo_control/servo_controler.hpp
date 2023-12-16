@@ -6,16 +6,16 @@
 
 class ServoControler{
   public:
-    ServoControler;
-    ~ServoControler;
+    ServoControler();
+    ~ServoControler();
     bool moveServoForBallRepel(const uint32_t &start_angle_pulse=500, const uint32_t &target_angle_pulse=950);
     int initSetup();
   private:
     int pi_state_;
     uint32_t pin_num_;
     uint32_t frequency_;
-    const MAX_ANGLE_PULSE=2500;
-    const MIN_ANGLE_PULSE=500;
+    const uint32_t MAX_ANGLE_PULSE=2500;
+    const uint32_t MIN_ANGLE_PULSE=500;
 };
 
 #endif

@@ -5,7 +5,7 @@
 #include <memory>
 #include <thread>
 
-#include "servo_control_interfaces/action/omni_wheel_control.hpp"
+#include "servo_control_interfaces/action/servo_control.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
