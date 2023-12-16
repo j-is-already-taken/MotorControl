@@ -78,10 +78,10 @@ namespace omni_wheel
     for(const auto &tmp_motor_ratio: motor_ratio)
     {
       std::cout << tmp_motor_ratio << std::endl;
-      RotationalDirection rotation_direction = RotationalDirection::CW;
+      RotationDirection rotation_direction = RotationDirection::CW;
       if(tmp_motor_ratio < 0)
       {
-        rotation_direction = RotationalDirection::CCW;
+        rotation_direction = RotationDirection::CCW;
       }
       motor_command.emplace_back(MotorCommand{static_cast<uint32_t>(std::abs(tmp_motor_ratio)) , rotation_direction});
     }
