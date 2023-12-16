@@ -10,7 +10,7 @@
 #include "rclcpp_action/rclcpp_action.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 
-#include "servo_control.hpp"
+#include "servo_controler.hpp"
 
 
 
