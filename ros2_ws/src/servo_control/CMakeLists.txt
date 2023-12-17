@@ -13,11 +13,21 @@ find_package(rclcpp_action REQUIRED)
 find_package(rclcpp_components REQUIRED)
 
 add_library(servo_control_server SHARED)
+add_library(servo_control_client SHARED)
+
 target_sources(servo_control_server PRIVATE 
   src/servo_control_server.cpp
   src/servo_controller.cpp
   )
+target_sources(servo_control_client PRIVATE 
+  src/servo_control_client.cpp
+  )
+
 target_include_directories(servo_control_server PRIVATE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>)
+
+target_include_directories(servo_control_client PRIVATE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>)
 
@@ -26,12 +36,19 @@ ament_target_dependencies(servo_control_server
     "rclcpp"
     "rclcpp_action"
     "rclcpp_components")
+ament_target_dependencies(servo_control_client
+    "servo_control_interfaces"
+    "rclcpp"
+    "rclcpp_action"
+    "rclcpp_components")
 
 target_link_libraries(servo_control_server  pigpiod_if2)
 target_compile_features(servo_control_server PRIVATE cxx_std_20)
+target_compile_features(servo_control_client PRIVATE cxx_std_20)
 
 install(TARGETS
     servo_control_server
+    servo_control_client
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib
     RUNTIME DESTINATION bin)
@@ -51,6 +68,8 @@ rclcpp_components_register_node(servo_control_server PLUGIN
   "servo_control::ServoControlActionServer" EXECUTABLE
   servo_control_action_server)
 
-
+rclcpp_components_register_node(servo_control_client PLUGIN
+  "servo_control::ServoControlActionClient" EXECUTABLE
+  servo_control_action_client)
 
 ament_package()
