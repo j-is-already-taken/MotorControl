@@ -8,12 +8,20 @@ namespace servo_control_client
     this->servo_control_client_ptr_ = rclcpp_action::create_client<ServoControl>(
         this,
         "servo_control");
+    psd_sensor_sub_ =  this->create_subscription<std_msgs::msg::String>(
+		    "Serial_in", 1, std::bind(&ServoControlActionClient::psdSensorTopicCallback, this, std::placeholders::_1));
 
     /*
     this->timer_ = this->create_wall_timer(
         std::chrono::milliseconds(500),
         std::bind(&ServoControlActionClient::send_goal, this));
     */
+  }
+
+  void ServoControlActionClient::psdSensorTopicCallback(const std_msgs::msg::String::SharedPtr msg) const
+  {
+    //using namespace std::placeholders;
+    RCLCPP_INFO(this->get_logger(), "I heard: '%s'", msg->data.c_str());
   }
 
   void ServoControlActionClient::send_goal()

@@ -11,6 +11,7 @@ find_package(servo_control_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(rclcpp_components REQUIRED)
+find_package(std_msgs REQUIRED)
 
 add_library(servo_control_server SHARED)
 add_library(servo_control_client SHARED)
@@ -40,7 +41,9 @@ ament_target_dependencies(servo_control_client
     "servo_control_interfaces"
     "rclcpp"
     "rclcpp_action"
-    "rclcpp_components")
+    "rclcpp_components"
+    "std_msgs"
+    )
 
 target_link_libraries(servo_control_server  pigpiod_if2)
 target_compile_features(servo_control_server PRIVATE cxx_std_20)

@@ -13,6 +13,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
+#include "std_msgs/msg/string.hpp"
 
 namespace servo_control_client
 {
@@ -28,6 +29,10 @@ namespace servo_control_client
 
     private:
       rclcpp_action::Client<ServoControl>::SharedPtr servo_control_client_ptr_;
+
+      rclcpp::Subscription<std_msgs::msg::String>::SharedPtr psd_sensor_sub_;
+
+      void psdSensorTopicCallback(const std_msgs::msg::String::SharedPtr msg) const;
       //rclcpp::TimerBase::SharedPtr timer_;
 
       void goal_response_callback(const GoalHandleServo::SharedPtr & goal_handle);
