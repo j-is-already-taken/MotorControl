@@ -72,7 +72,7 @@ rclcpp_components_register_node(servo_control_server PLUGIN
   servo_control_action_server)
 
 rclcpp_components_register_node(servo_control_client PLUGIN
-  "servo_control::ServoControlActionClient" EXECUTABLE
+  "servo_control_client::ServoControlActionClient" EXECUTABLE
   servo_control_action_client)
 
 ament_package()

@@ -32,7 +32,7 @@ namespace servo_control_client
 
       rclcpp::Subscription<std_msgs::msg::String>::SharedPtr psd_sensor_sub_;
 
-      void psdSensorTopicCallback(const std_msgs::msg::String::SharedPtr msg) const;
+      void psdSensorTopicCallback(const std_msgs::msg::String::SharedPtr msg);
       //rclcpp::TimerBase::SharedPtr timer_;
 
       void goal_response_callback(const GoalHandleServo::SharedPtr & goal_handle);

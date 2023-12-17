@@ -8,8 +8,8 @@ namespace servo_control_client
     this->servo_control_client_ptr_ = rclcpp_action::create_client<ServoControl>(
         this,
         "servo_control");
-    psd_sensor_sub_ =  this->create_subscription<std_msgs::msg::String>(
-		    "Serial_in", 1, std::bind(&ServoControlActionClient::psdSensorTopicCallback, this, std::placeholders::_1));
+    this->psd_sensor_sub_ =  this->create_subscription<std_msgs::msg::String>(
+		    "/Serial_in", 1, std::bind(&ServoControlActionClient::psdSensorTopicCallback, this, std::placeholders::_1));
 
     /*
     this->timer_ = this->create_wall_timer(
@@ -18,10 +18,22 @@ namespace servo_control_client
     */
   }
 
-  void ServoControlActionClient::psdSensorTopicCallback(const std_msgs::msg::String::SharedPtr msg) const
+  void ServoControlActionClient::psdSensorTopicCallback(const std_msgs::msg::String::SharedPtr msg) 
   {
     //using namespace std::placeholders;
-    RCLCPP_INFO(this->get_logger(), "I heard: '%s'", msg->data.c_str());
+	  std::string raw_data = msg->data;
+	  std::string::size_type pos = raw_data.find("\n");
+	  double psd_sensor_value = 0.0;
+	  if(pos == std::string::npos){
+		  psd_sensor_value = std::stod(raw_data);
+	  }else{
+		  std::string tmp_num = raw_data.substr(0, pos);
+		  psd_sensor_value = std::stod(raw_data);
+	  }
+	  if(300 < psd_sensor_value && psd_sensor_value < 600){
+		  send_goal();
+	  }
+    RCLCPP_INFO(this->get_logger(), "I heard: '%f'", psd_sensor_value);
   }
 
   void ServoControlActionClient::send_goal()
@@ -88,7 +100,7 @@ namespace servo_control_client
     std::stringstream ss;
     ss << "Result received: ";
     RCLCPP_INFO(this->get_logger(), ss.str().c_str());
-    rclcpp::shutdown();
+    //rclcpp::shutdown();
   }
 
 }  // namespace action_tutorials_cpp
