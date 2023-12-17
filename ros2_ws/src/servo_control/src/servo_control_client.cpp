@@ -5,7 +5,7 @@ namespace servo_control_client
   ServoControlActionClient::ServoControlActionClient(const rclcpp::NodeOptions & options)
     : Node("servo_control_client", options)
   {
-    this->client_ptr_ = rclcpp_action::create_client<ServoControl>(
+    this->servo_control_client_ptr_ = rclcpp_action::create_client<ServoControl>(
         this,
         "servo_control");
 
@@ -22,7 +22,7 @@ namespace servo_control_client
 
     //this->timer_->cancel();
 
-    if (!this->client_ptr_->wait_for_action_server()) {
+    if (!this->servo_control_client_ptr_->wait_for_action_server()) {
       RCLCPP_ERROR(this->get_logger(), "Action server not available after waiting");
       rclcpp::shutdown();
     }
@@ -40,7 +40,7 @@ namespace servo_control_client
       std::bind(&ServoControlActionClient::feedback_callback, this, std::placeholders::_1, std::placeholders::_2);
     send_goal_options.result_callback =
       std::bind(&ServoControlActionClient::result_callback, this, std::placeholders::_1);
-    this->client_ptr_->async_send_goal(goal_msg, send_goal_options);
+    this->servo_control_client_ptr_->async_send_goal(goal_msg, send_goal_options);
   }
 
 

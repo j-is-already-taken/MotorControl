@@ -20,7 +20,7 @@ namespace servo_control_client
   {
     public:
       using ServoControl = servo_control_interfaces::action::ServoControl;
-      using GoalHandleServo = rclcpp_action::ServerGoalHandle<ServoControl>;
+      using GoalHandleServo = rclcpp_action::ClientGoalHandle<ServoControl>;
 
       explicit ServoControlActionClient(const rclcpp::NodeOptions & options);
 
@@ -28,7 +28,7 @@ namespace servo_control_client
 
     private:
       rclcpp_action::Client<ServoControl>::SharedPtr servo_control_client_ptr_;
-      rclcpp::TimerBase::SharedPtr timer_;
+      //rclcpp::TimerBase::SharedPtr timer_;
 
       void goal_response_callback(const GoalHandleServo::SharedPtr & goal_handle);
 
