@@ -15,11 +15,11 @@ find_package(rclcpp_components REQUIRED)
 add_library(servo_control_server SHARED)
 target_sources(servo_control_server PRIVATE 
   src/servo_control_server.cpp
-  src/servo_controler.cpp
+  src/servo_controller.cpp
   )
 target_include_directories(servo_control_server PRIVATE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-      $<INSTALL_INTERFACE:include>)
+    $<INSTALL_INTERFACE:include>)
 
 ament_target_dependencies(servo_control_server
     "servo_control_interfaces"
@@ -28,6 +28,14 @@ ament_target_dependencies(servo_control_server
     "rclcpp_components")
 
 target_link_libraries(servo_control_server  pigpiod_if2)
+target_compile_features(servo_control_server PRIVATE cxx_std_20)
+
+install(TARGETS
+    servo_control_server
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin)
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   # the following line skips the linter which checks for copyrights
@@ -43,10 +51,6 @@ rclcpp_components_register_node(servo_control_server PLUGIN
   "servo_control::ServoControlActionServer" EXECUTABLE
   servo_control_action_server)
 
-install(TARGETS
-    servo_control_action_server
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib
-    RUNTIME DESTINATION bin)
+
 
 ament_package()

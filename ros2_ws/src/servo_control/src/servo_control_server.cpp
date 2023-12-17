@@ -13,7 +13,7 @@ namespace servo_control
 
     this->action_server_ = rclcpp_action::create_server<ServoControl>(
         this,
-        "omni_wheel",
+        "servo_control",
         std::bind(&ServoControlActionServer::handle_goal, this, std::placeholders::_1, std::placeholders::_2),
         std::bind(&ServoControlActionServer::handle_cancel, this, std::placeholders::_1),
         std::bind(&ServoControlActionServer::handle_accepted, this, std::placeholders::_1));
@@ -47,7 +47,7 @@ namespace servo_control
   void ServoControlActionServer::execute(const std::shared_ptr<GoalHandleServo> goal_handle)
   {
     RCLCPP_INFO(this->get_logger(), "Executing goal");
-    rclcpp::Rate loop_rate(50);
+    rclcpp::Rate loop_rate(200);
     //rclcpp::Time time = rclcpp::Time::now();
     const auto goal = goal_handle->get_goal();
     auto feedback = std::make_shared<ServoControl::Feedback>();
@@ -59,6 +59,7 @@ namespace servo_control
     bool success = false;
     if(goal->is_move)
     {
+      servo_controller_.moveServoForBallRepel();
       // Check if there is a cancel request
       if (goal_handle->is_canceling()) 
       {

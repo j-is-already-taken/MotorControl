@@ -1,16 +1,17 @@
-#ifndef SERVO_CONTROLER_H_
-#define SERVO_CONTROLER_H_
+#ifndef SERVO_CONTROLLER_H_
+#define SERVO_CONTROLLER_H_
 
 #include <pigpiod_if2.h>
 #include <iostream>
 
-class ServoControler{
+class ServoController{
   public:
-    ServoControler();
-    ~ServoControler();
+    ServoController();
+    ~ServoController();
     bool moveServoForBallRepel(const uint32_t &start_angle_pulse=500, const uint32_t &target_angle_pulse=950);
-    int initSetup();
   private:
+    int initSetup();
+
     int pi_state_;
     uint32_t pin_num_;
     uint32_t frequency_;

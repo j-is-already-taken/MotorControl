@@ -10,7 +10,7 @@
 #include "rclcpp_action/rclcpp_action.hpp"
 #include "rclcpp_components/register_node_macro.hpp"
 
-#include "servo_controler.hpp"
+#include "servo_controller.hpp"
 
 
 
@@ -37,7 +37,7 @@ namespace servo_control
 
       void execute(const std::shared_ptr<GoalHandleServo> goal_handle);
 
-      ServoControler servo_controler_;
+      ServoController servo_controller_;
       //OmniWheelControl omni_wheel_control;
       //MotorControl motor_control_;
   };  // class OmniWheelActionServer
