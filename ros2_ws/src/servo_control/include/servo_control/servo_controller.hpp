@@ -17,6 +17,7 @@ class ServoController{
     uint32_t frequency_;
     const uint32_t MAX_ANGLE_PULSE=2500;
     const uint32_t MIN_ANGLE_PULSE=500;
+
 };
 
 #endif

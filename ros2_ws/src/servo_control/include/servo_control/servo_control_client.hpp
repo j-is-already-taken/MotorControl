@@ -42,6 +42,9 @@ namespace servo_control_client
           const std::shared_ptr<const ServoControl::Feedback> feedback);
 
       void result_callback(const GoalHandleServo::WrappedResult & result);
+      std::atomic<bool> is_servo_running_;
+
+
   };  // class ServoControlActionClient
 
 }  // namespace action_tutorials_cpp

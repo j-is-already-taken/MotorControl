@@ -52,8 +52,9 @@ bool ServoController::moveServoForBallRepel(const uint32_t &start_angle_pulse, c
   uint32_t target_angle = std::clamp(target_angle_pulse, MIN_ANGLE_PULSE, MAX_ANGLE_PULSE);
 
   if(isCheckError(set_servo_pulsewidth(pi_state_, pin_num_, target_angle), "set pulse width error", PI_BAD_USER_GPIO, PI_BAD_PULSEWIDTH, PI_NOT_PERMITTED)) return false;
-  time_sleep(1);
+  time_sleep(0.3);
   if(isCheckError(set_servo_pulsewidth(pi_state_, pin_num_, start_angle), "set pulse width error", PI_BAD_USER_GPIO, PI_BAD_PULSEWIDTH, PI_NOT_PERMITTED)) return false;
 
+  time_sleep(0.3);
   return true;
 }
