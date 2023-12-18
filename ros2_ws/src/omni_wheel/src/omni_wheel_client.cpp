@@ -29,7 +29,7 @@ public:
       "/center_coordinate", 5, std::bind(&OmniWheelActionClient::topic_callback, this, std::placeholders::_1));
 
     this->timer_ = this->create_wall_timer(
-      std::chrono::milliseconds500(),
+      std::chrono::milliseconds(500),
       std::bind(&OmniWheelActionClient::timer_callback, this));
   }
 
@@ -38,7 +38,7 @@ public:
     last_received_ = this->now();
     
     if (is_turning_) {
-      this->client_ptr_->async_cacel_goal(current_goal_);
+      this->client_ptr_->async_cancel_goal(current_goal_);
       is_turning_ = false;
 	}
 
@@ -54,14 +54,14 @@ public:
     double angle_deg = angle_rad * (180.0 / M_PI);
 
     RCLCPP_INFO(this->get_logger(), "Object angle: %f degrees", angle_deg);
-    send_goal(angle_deg, turning=false);
+    send_goal(angle_deg, false);
    }
 
   void timer_callback()
   {
     if ((this->now() - last_received_).seconds() >= 0.5 && !is_turning_) {
       // If no message received for 0.5 seconds and not already turning
-      send__goal(angle_deg=1, turnig=true);
+      send__goal(1, true);
       is_turning_ = true;
     }
   }
