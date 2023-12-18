@@ -38,7 +38,7 @@ public:
     last_received_ = this->now();
     
     if (is_turning_) {
-      this->client_ptr_->async_cancel_goal(current_goal_);
+      this->client_ptr_->async_cancel_all_goals();
       is_turning_ = false;
 	}
 
@@ -61,7 +61,7 @@ public:
   {
     if ((this->now() - last_received_).seconds() >= 0.5 && !is_turning_) {
       // If no message received for 0.5 seconds and not already turning
-      send__goal(1, true);
+      send_goal(1, true);
       is_turning_ = true;
     }
   }
@@ -89,7 +89,7 @@ public:
       std::bind(&OmniWheelActionClient::feedback_callback, this, _1, _2);
     send_goal_options.result_callback =
       std::bind(&OmniWheelActionClient::result_callback, this, _1);
-    current_goal_ = this->client_ptr_->async_send_goal(goal_msg, send_goal_options);
+    this->client_ptr_->async_send_goal(goal_msg, send_goal_options);
   }
 
 private:
