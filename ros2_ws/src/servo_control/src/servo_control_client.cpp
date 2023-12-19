@@ -3,7 +3,7 @@
 namespace servo_control_client
 {
   ServoControlActionClient::ServoControlActionClient(const rclcpp::NodeOptions & options)
-    : Node("servo_control_client", options)
+    : Node("servo_control_client", options), is_servo_running_(false)
   {
     this->servo_control_client_ptr_ = rclcpp_action::create_client<ServoControl>(
         this,
@@ -30,10 +30,14 @@ namespace servo_control_client
 		  std::string tmp_num = raw_data.substr(0, pos);
 		  psd_sensor_value = std::stod(raw_data);
 	  }
-	  if(300 < psd_sensor_value && psd_sensor_value < 600){
-		  send_goal();
-	  }
+	  if(250 < psd_sensor_value && psd_sensor_value < 400){
+		  if(!is_servo_running_)
+		  {
+		    is_servo_running_ = true;
+		    send_goal();
     RCLCPP_INFO(this->get_logger(), "I heard: '%f'", psd_sensor_value);
+		  }
+	  }
   }
 
   void ServoControlActionClient::send_goal()
@@ -100,6 +104,7 @@ namespace servo_control_client
     std::stringstream ss;
     ss << "Result received: ";
     RCLCPP_INFO(this->get_logger(), ss.str().c_str());
+    is_servo_running_ = false;
     //rclcpp::shutdown();
   }
 
