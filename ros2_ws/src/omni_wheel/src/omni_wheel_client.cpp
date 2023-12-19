@@ -20,7 +20,7 @@ public:
   using GoalHandleOmniWheel = rclcpp_action::ClientGoalHandle<OmniWheelControl>;
 
   explicit OmniWheelActionClient(const rclcpp::NodeOptions & options)
-  : Node("omni_wheel_action_client", options)
+  : Node("omni_wheel_action_client", options), last_received_(this->now())
   {
     this->client_ptr_ = rclcpp_action::create_client<OmniWheelControl>(
       this, "omni_wheel");
@@ -46,8 +46,8 @@ public:
     double y = msg->y;
 
     // 画像中心からの相対座標
-    double dx = x - 320;
-    double dy = y - 240;
+    double dx = x - 210;
+    double dy = y - 320;
 
     // 角度の計算 (ラジアンから度に変換)
     double angle_rad = atan2(dy, dx);
@@ -59,7 +59,7 @@ public:
 
   void timer_callback()
   {
-    if ((this->now() - last_received_).seconds() >= 0.5 && !is_turning_) {
+    if (this->now() - last_received_ >= rclcpp::Duration(0.5, 0) && !is_turning_) {
       // If no message received for 0.5 seconds and not already turning
       send_goal(1, true);
       is_turning_ = true;
